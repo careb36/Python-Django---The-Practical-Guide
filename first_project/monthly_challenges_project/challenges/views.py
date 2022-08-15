@@ -1,5 +1,6 @@
 from http.client import HTTPResponse, HTTPResponseNotFound, HTTPResponseRedirect
 from django.shortcuts import render
+from django.urls import reverse
 
 # Creo un diccionario con los meses y una descripción sobre que hacer en cada mes
 monthly_challenges = {
@@ -21,8 +22,9 @@ def monthly_challenges_by_number(request, month):
     months = list(monthly_challenges.keys())
     if month > len(months) or month < 1:
         return HTTPResponseNotFound('<h1>404</h1><p>No se encontró el mes</p>')
-    redirect_month = months[month-1]
-    return HTTPResponseRedirect("/challenges/"+redirect_month)
+    redirect_month = months[month - 1]
+    redirect_path = reverse('monthly_challenges', args=[redirect_month])
+    return HTTPResponseRedirect(redirect_path)
     
 
 def monthly_challenges(request, month):
@@ -31,6 +33,4 @@ def monthly_challenges(request, month):
         return HTTPResponse(challenge_text)
     except:
         return HTTPResponseNotFound('<h1>404</h1><p>No se encontró el mes</p>')
-
-# este es un comentario para ver si funciona el pull request
     
