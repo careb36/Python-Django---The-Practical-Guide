@@ -1,0 +1,15 @@
+{
+	"folders": [
+		{
+			"path": "../.."
+		},
+		{
+			"name": "Entrega-Intermedia-Abati-Pereira-Banchieri",
+			"path": "../../../../Dev/Django/Entrega-Intermedia-Abati-Pereira-Banchieri"
+		}
+	],
+	"settings": {
+		"python.languageServer": "Pylance",
+		"editor.fontSize": 14,
+	}
+}
