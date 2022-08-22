@@ -1,36 +1,48 @@
-from http.client import HTTPResponse, HTTPResponseNotFound, HTTPResponseRedirect
 from django.shortcuts import render
+from django.http import Http404, HttpResponseNotFound, HttpResponseRedirect
+from django.urls import reverse
 
-# Creo un diccionario con los meses y una descripción sobre que hacer en cada mes
 monthly_challenges = {
-    'January': 'Disfrutar de la playa y del sol',
-    'February': 'Disfrutar de la playa y de paseos frente al mar',
-    'March': 'Retomando de a poco los horarios de oficina',
-    'April': 'Disfrutar de las vacaciones de turismo',
-    'May': 'Ir al cumpleaños de un amigo',
-    'June': 'Se vino el frío, debo permanecer en casa',
-    'July': 'Sigue el frío, debo permanecer en casa',
-    'August': 'Es el cumpleaños de mi hijo, debo ir a verlo',
-    'September': 'Empezar el deporte y la dieta',
-    'October': 'Es el mes de mi cumpleaños, me encantaría festejarlo',
-    'November': 'Empieza a hacer calor nuevamente, ¿por qué no ir a la playa?',
-    'December': 'Es el mes de los amigos, after office, fiestas, despedidas, etc',
+    "january": "Eat no meat for the entire month!",
+    "february": "Walk for at least 20 minutes every day!",
+    "march": "Learn Django for at least 20 minutes every day!",
+    "april": "Eat no meat for the entire month!",
+    "may": "Walk for at least 20 minutes every day!",
+    "june": "Learn Django for at least 20 minutes every day!",
+    "july": "Eat no meat for the entire month!",
+    "august": "Walk for at least 20 minutes every day!",
+    "september": "Learn Django for at least 20 minutes every day!",
+    "october": "Eat no meat for the entire month!",
+    "november": "Walk for at least 20 minutes every day!",
+    "december": None
 }
 
-def monthly_challenges_by_number(request, month):
-    months = list(monthly_challenges.keys())
-    if month > len(months) or month < 1:
-        return HTTPResponseNotFound('<h1>404</h1><p>No se encontró el mes</p>')
-    redirect_month = months[month-1]
-    return HTTPResponseRedirect("/challenges/"+redirect_month)
-    
+# Create your views here.
 
-def monthly_challenges(request, month):
+def index(request):
+    months = list(monthly_challenges.keys())
+
+    return render(request, "challenges/index.html", {
+        "months": months
+    })
+
+def monthly_challenge_by_number(request, month):
+    months = list(monthly_challenges.keys())
+
+    if month > len(months):
+        return HttpResponseNotFound("Invalid month")
+
+    redirect_month = months[month - 1]
+    redirect_path = reverse("month-challenge", args=[redirect_month]) # /challenge/january
+    return HttpResponseRedirect(redirect_path)
+
+
+def monthly_challenge(request, month):
     try:
         challenge_text = monthly_challenges[month]
-        return HTTPResponse(challenge_text)
+        return render(request, "challenges/challenge.html", {
+            "text": challenge_text,
+            "month_name": month
+        })
     except:
-        return HTTPResponseNotFound('<h1>404</h1><p>No se encontró el mes</p>')
-
-# este es un comentario para ver si funciona el pull request
-    
+        raise Http404()
